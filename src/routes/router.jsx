@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 import App from '../App'
 import ProtectedRoute from '../components/ProtectedRoute'
@@ -19,6 +20,11 @@ const PendingReviewPage = lazy(() => import('../pages/PendingReviewPage'))
 const ReassignmentInboxPage = lazy(() => import('../pages/ReassignmentInboxPage'))
 const AdminTicketDetailsPage = lazy(() => import('../pages/AdminTicketDetailsPage'))
 
+function RootRedirect() {
+  const { isAdmin } = useAuth()
+  return isAdmin ? <Navigate to="/admin" replace /> : <UserDashboardPage />
+}
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -30,6 +36,7 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <UserDashboardPage />
+            <RootRedirect />
           </ProtectedRoute>
         ),
       },

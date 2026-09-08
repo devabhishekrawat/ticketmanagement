@@ -85,6 +85,20 @@ export function AuthProvider({ children }) {
       password,
     })
     if (error) throw error
+
+    if (data?.user) {
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .maybeSingle()
+
+      if (prof) {
+        setProfile(prof)
+        return { ...data, profile: prof }
+      }
+    }
+
     return data
   }
 
@@ -122,24 +136,6 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const switchDemoRole = (targetRole) => {
-    if (!profile) return
-    setProfile((prev) => ({ ...prev, role: targetRole }))
-  }
-
-  const demoLogin = (role = 'USER') => {
-    const dummyId = role === 'ADMIN' ? 'demo-admin-id' : 'demo-user-id'
-    const dummyUser = { id: dummyId, email: `${role.toLowerCase()}@company.internal` }
-    setUser(dummyUser)
-    setProfile({
-      id: dummyId,
-      email: dummyUser.email,
-      full_name: role === 'ADMIN' ? 'Sarah Admin' : 'Alex Employee',
-      role: role,
-      department: role === 'ADMIN' ? 'IT Operations' : 'Product Design',
-    })
-  }
-
   const value = {
     user,
     profile,
@@ -147,8 +143,6 @@ export function AuthProvider({ children }) {
     signIn,
     signUp,
     signOut,
-    switchDemoRole,
-    demoLogin,
     isAdmin: profile?.role === 'ADMIN' || profile?.role === 'SUPER_ADMIN',
   }
 
