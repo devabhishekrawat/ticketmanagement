@@ -1,0 +1,32 @@
+@use '../abstracts' as *;
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: rem(8px) rem(12px);
+  font-size: rem(13px);
+  color: $text-dark;
+  background-color: $color-white;
+  border: rem(1px) solid $border-color;
+  border-radius: rem(10px);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder {
+    color: $text-light;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $border-focus;
+    box-shadow: 0 0 0 rem(1px) $border-focus;
+  }
+}
+
+.form-label {
+  display: block;
+  font-size: rem(12px);
+  font-weight: 600;
+  color: $text-body;
+  margin-bottom: rem(6px);
+}

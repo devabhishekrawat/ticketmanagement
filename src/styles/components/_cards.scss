@@ -1,0 +1,66 @@
+@use '../abstracts' as *;
+
+.card {
+  background-color: $bg-card;
+  border: rem(1px) solid $border-color;
+  border-radius: rem(14px);
+  box-shadow: $shadow-card;
+  padding: rem(24px);
+}
+
+.stat-card {
+  background-color: $bg-card;
+  border: rem(1px) solid $border-color;
+  border-radius: rem(14px);
+  padding: rem(20px);
+  box-shadow: $shadow-card;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &.is-clickable {
+    cursor: pointer;
+    &:hover {
+      border-color: $text-light;
+    }
+  }
+
+  &.is-active {
+    border-color: $primary;
+    box-shadow: 0 0 0 rem(2px) $color-ring-focus;
+  }
+
+  .stat-header {
+    @include flex-between;
+    margin-bottom: rem(12px);
+
+    .stat-title {
+      font-size: rem(11px);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: $text-muted;
+    }
+
+    .stat-icon {
+      width: rem(32px);
+      height: rem(32px);
+      @include flex-center;
+      border-radius: rem(6px);
+      background-color: $bg-subtle;
+      color: $text-muted;
+      border: rem(1px) solid $border-color;
+    }
+  }
+
+  .stat-value {
+    font-size: rem(24px);
+    font-weight: 700;
+    color: $text-dark;
+    line-height: 1.2;
+  }
+
+  .stat-subtitle {
+    margin-top: rem(4px);
+    font-size: rem(11px);
+    color: $text-muted;
+  }
+}

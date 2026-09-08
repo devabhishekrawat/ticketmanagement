@@ -1,0 +1,34 @@
+@use '../abstracts' as *;
+
+.comment-bubble {
+  border-radius: rem(12px);
+  padding: rem(16px);
+  background-color: $color-comment-bg;
+  border: rem(1px) solid $color-slate-100;
+  transition: background-color 0.15s ease;
+
+  &.is-internal {
+    background-color: $color-comment-internal-bg;
+    border-color: $color-amber-200;
+  }
+}
+
+.attachment-card {
+  @include flex-between;
+  border-radius: rem(8px);
+  border: rem(1px) solid $color-slate-200;
+  background-color: $color-attachment-bg;
+  padding: rem(10px) rem(12px);
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $color-attachment-hover-bg;
+  }
+}
+
+.verify-alert {
+  border-radius: rem(14px);
+  border: rem(1px) solid $color-green-200;
+  background-color: $color-verify-alert-bg;
+  padding: rem(24px);
+}

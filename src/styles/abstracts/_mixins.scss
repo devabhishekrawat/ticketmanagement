@@ -1,0 +1,37 @@
+@use 'variables' as *;
+
+@mixin pc {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin wide-pc {
+  @media (min-width: 1280px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: 768px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: 767px) {
+    @content;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

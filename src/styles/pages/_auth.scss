@@ -1,0 +1,48 @@
+@use '../abstracts' as *;
+
+.login-container,
+.register-container {
+  display: flex;
+  min-height: calc(100vh - #{rem(64px)});
+  align-items: center;
+  justify-content: center;
+  padding: rem(16px);
+
+  @include pc {
+    padding: rem(32px);
+  }
+}
+
+.auth-card {
+  width: 100%;
+  max-width: rem(420px);
+}
+
+.impact-box {
+  background-color: $color-slate-50;
+  border: rem(1px) solid $color-slate-200;
+  border-radius: rem(10px);
+  padding: rem(16px);
+}
+
+.dropzone-area {
+  border: rem(1px) dashed $color-slate-300;
+  border-radius: rem(10px);
+  padding: rem(24px);
+  text-align: center;
+  background-color: $color-dropzone-bg;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: $color-slate-400;
+  }
+}
+
+.user-notice-banner {
+  background-color: $color-amber-50;
+  border: rem(1px) solid $color-amber-200;
+  border-radius: rem(10px);
+  padding: rem(16px);
+  font-size: rem(12px);
+  color: $color-amber-800;
+}

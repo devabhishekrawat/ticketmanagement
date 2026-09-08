@@ -1,0 +1,23 @@
+@use '../abstracts' as *;
+
+.admin-ops-bar {
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: rem(16px);
+  background-color: $color-admin-bar-bg;
+  border: rem(1px) solid $color-purple-200;
+  border-radius: rem(12px);
+  padding: rem(16px);
+  margin-bottom: rem(24px);
+
+  @include pc {
+    flex-wrap: nowrap;
+  }
+}
+
+.reassign-item {
+  border: rem(1px) solid $color-slate-200;
+  border-radius: rem(10px);
+  background-color: $color-white;
+  padding: rem(16px);
+}

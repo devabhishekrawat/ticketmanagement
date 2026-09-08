@@ -1,0 +1,27 @@
+@use '../abstracts' as *;
+
+.timeline-track {
+  position: relative;
+  padding-left: rem(16px);
+
+  .timeline-bar {
+    position: absolute;
+    left: rem(7px);
+    top: rem(8px);
+    bottom: rem(8px);
+    width: rem(2px);
+    background-color: $color-slate-200;
+  }
+
+  .timeline-node {
+    position: relative;
+    z-index: 10;
+    margin-top: rem(4px);
+    width: rem(12px);
+    height: rem(12px);
+    border-radius: 50%;
+    background-color: $color-blue-600;
+    border: rem(2px) solid $color-white;
+    box-shadow: 0 rem(1px) rem(2px) $color-node-shadow;
+  }
+}

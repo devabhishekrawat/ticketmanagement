@@ -1,0 +1,54 @@
+@use '../abstracts' as *;
+
+.table-wrapper {
+  background-color: $color-white;
+  border: rem(1px) solid $border-color;
+  border-radius: rem(14px);
+  box-shadow: $shadow-card;
+  overflow: hidden;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: rem(13px);
+
+    thead {
+      background-color: $color-comment-bg;
+      border-bottom: rem(1px) solid $border-color;
+
+      th {
+        padding: rem(12px) rem(16px);
+        font-size: rem(11px);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: $text-muted;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: rem(1px) solid $color-slate-100;
+        transition: background-color 0.1s ease;
+
+        &.clickable {
+          cursor: pointer;
+          &:hover {
+            background-color: $color-subtle-hover;
+          }
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        td {
+          padding: rem(14px) rem(16px);
+          vertical-align: middle;
+          color: $text-body;
+        }
+      }
+    }
+  }
+}

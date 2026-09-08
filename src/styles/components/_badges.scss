@@ -1,0 +1,129 @@
+@use '../abstracts' as *;
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: rem(6px);
+  border-radius: rem(9999px);
+  padding: rem(3px) rem(10px);
+  font-size: rem(12px);
+  font-weight: 500;
+  line-height: 1;
+  border: rem(1px) solid transparent;
+  transition: all 0.15s ease-in-out;
+  white-space: nowrap;
+
+  .dot {
+    width: rem(6px);
+    height: rem(6px);
+    border-radius: 50%;
+  }
+
+  &.size-xs {
+    padding: rem(2px) rem(8px);
+    font-size: rem(11px);
+    .dot {
+      width: rem(5px);
+      height: rem(5px);
+    }
+  }
+}
+
+.status-new {
+  background-color: $color-blue-50;
+  color: $color-blue-700;
+  border-color: $color-blue-200;
+  .dot {
+    background-color: $color-blue-500;
+  }
+}
+
+.status-assigned {
+  background-color: $color-purple-50;
+  color: $color-purple-700;
+  border-color: $color-purple-200;
+  .dot {
+    background-color: $color-purple-500;
+  }
+}
+
+.status-in-progress {
+  background-color: $color-amber-50;
+  color: $color-amber-700;
+  border-color: $color-amber-200;
+  .dot {
+    background-color: $color-amber-500;
+  }
+}
+
+.status-resolved {
+  background-color: $color-green-50;
+  color: $color-green-700;
+  border-color: $color-green-200;
+  .dot {
+    background-color: $color-green-500;
+  }
+}
+
+.status-reopened {
+  background-color: $color-rose-50;
+  color: $color-rose-700;
+  border-color: $color-rose-200;
+  .dot {
+    background-color: $color-rose-500;
+  }
+}
+
+.status-closed {
+  background-color: $color-slate-100;
+  color: $color-slate-600;
+  border-color: $color-slate-200;
+  .dot {
+    background-color: $color-slate-400;
+  }
+}
+
+.status-rejected {
+  background-color: $color-red-50;
+  color: $color-red-700;
+  border-color: $color-red-200;
+  .dot {
+    background-color: $color-red-500;
+  }
+}
+
+.priority-low {
+  background-color: $color-slate-50;
+  color: $color-slate-600;
+  border-color: $color-slate-200;
+  svg {
+    color: $color-slate-400;
+  }
+}
+
+.priority-medium {
+  background-color: $color-blue-50;
+  color: $color-blue-700;
+  border-color: $color-blue-200;
+  svg {
+    color: $color-blue-500;
+  }
+}
+
+.priority-high {
+  background-color: $color-amber-50;
+  color: $color-amber-700;
+  border-color: $color-amber-200;
+  svg {
+    color: $color-amber-500;
+  }
+}
+
+.priority-urgent {
+  background-color: $color-rose-50;
+  color: $color-rose-700;
+  border-color: $color-rose-200;
+  svg {
+    color: $color-rose-600;
+  }
+}

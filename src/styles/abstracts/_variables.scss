@@ -1,0 +1,92 @@
+$color-white: #ffffff;
+$color-black: #000000;
+
+$color-slate-50: #f8fafc;
+$color-slate-100: #f1f5f9;
+$color-slate-200: #e2e8f0;
+$color-slate-300: #cbd5e1;
+$color-slate-400: #94a3b8;
+$color-slate-500: #64748b;
+$color-slate-600: #475569;
+$color-slate-700: #334155;
+$color-slate-800: #1e293b;
+$color-slate-900: #0f172a;
+
+$color-blue-50: #eff6ff;
+$color-blue-100: #dbeafe;
+$color-blue-200: #bfdbfe;
+$color-blue-500: #3b82f6;
+$color-blue-600: #2563eb;
+$color-blue-700: #1d4ed8;
+
+$color-purple-50: #faf5ff;
+$color-purple-200: #e9d5ff;
+$color-purple-500: #a855f7;
+$color-purple-600: #9333ea;
+$color-purple-700: #7e22ce;
+
+$color-amber-50: #fffbeb;
+$color-amber-100: #fef3c7;
+$color-amber-200: #fde68a;
+$color-amber-500: #f59e0b;
+$color-amber-700: #b45309;
+$color-amber-800: #92400e;
+
+$color-green-50: #f0fdf4;
+$color-green-100: #dcfce7;
+$color-green-200: #bbf7d0;
+$color-green-500: #22c55e;
+$color-green-600: #16a34a;
+$color-green-700: #15803d;
+
+$color-rose-50: #fff1f2;
+$color-rose-100: #ffe4e6;
+$color-rose-200: #fecdd3;
+$color-rose-500: #f43f5e;
+$color-rose-600: #e11d48;
+$color-rose-700: #be123c;
+
+$color-red-50: #fef2f2;
+$color-red-100: #fee2e2;
+$color-red-200: #fecaca;
+$color-red-500: #ef4444;
+$color-red-600: #dc2626;
+$color-red-700: #b91c1c;
+
+$color-overlay-dark: rgba(15, 23, 42, 0.45);
+$color-overlay-backdrop: rgba(15, 23, 42, 0.4);
+$color-admin-bar-bg: rgba(250, 245, 255, 0.7);
+$color-comment-bg: rgba(241, 245, 249, 0.75);
+$color-comment-internal-bg: rgba(254, 243, 199, 0.75);
+$color-dropzone-bg: rgba(248, 250, 252, 0.5);
+$color-attachment-bg: rgba(248, 250, 252, 0.6);
+$color-attachment-hover-bg: rgba(241, 245, 249, 0.8);
+$color-verify-alert-bg: rgba(240, 253, 244, 0.75);
+$color-subtle-hover: rgba(241, 245, 249, 0.6);
+$color-ring-focus: rgba(37, 99, 235, 0.2);
+$color-node-shadow: rgba(0, 0, 0, 0.05);
+
+$bg-body: $color-slate-50;
+$bg-card: $color-white;
+$bg-subtle: $color-slate-100;
+
+$text-dark: $color-slate-900;
+$text-body: $color-slate-700;
+$text-muted: $color-slate-500;
+$text-light: $color-slate-400;
+
+$border-color: $color-slate-200;
+$border-focus: $color-blue-500;
+
+$primary: $color-blue-600;
+$primary-hover: $color-blue-700;
+
+$success: $color-green-600;
+$warning: $color-amber-500;
+$danger: $color-red-600;
+$purple: $color-purple-600;
+
+$shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+$shadow-modal: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+$font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;

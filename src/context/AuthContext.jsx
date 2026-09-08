@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../services/supabase'
+import { supabase } from '../config/supabaseConfig'
 
 const AuthContext = createContext(null)
 
@@ -92,27 +92,19 @@ export function AuthProvider({ children }) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName,
-          department: department || 'General',
-          role: 'USER',
-        },
-      },
     })
     if (error) throw error
 
-    if (data.user) {
-      try {
-        await supabase.from('profiles').upsert({
-          id: data.user.id,
-          email,
-          full_name: fullName,
-          department: department || 'General',
-          role: 'USER',
-        })
-      } catch (e) {
-        console.warn('Could not insert profile:', e.message)
+    if (data?.user) {
+      const { error: profileError } = await supabase.from('profiles').insert({
+        id: data.user.id,
+        email: data.user.email || email,
+        full_name: fullName,
+        department: department || 'General',
+        role: 'USER',
+      })
+      if (profileError) {
+        console.warn('Profile insert:', profileError.message)
       }
     }
 
