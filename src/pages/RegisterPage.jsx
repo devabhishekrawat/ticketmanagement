@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../shared/context/AuthContext'
-import { ROUTES } from '../../shared/constants/routes'
-import { notify } from '../../shared/utils/toast'
+import { useAuth } from '../context/AuthContext'
+import { notify } from '../utils/toast'
 import { Ticket, UserPlus } from 'lucide-react'
 
 export function RegisterPage() {
@@ -43,7 +42,7 @@ export function RegisterPage() {
         department: formData.department,
       })
       notify.success('Account created! You can now sign in.')
-      navigate(ROUTES.LOGIN)
+      navigate('/login')
     } catch (err) {
       notify.error(err.message || 'Registration failed.')
     } finally {
@@ -141,7 +140,7 @@ export function RegisterPage() {
 
         <p className="text-center text-xs text-slate-500">
           Already registered?{' '}
-          <Link to={ROUTES.LOGIN} className="font-semibold text-blue-600 hover:underline">
+          <Link to="/login" className="font-semibold text-blue-600 hover:underline">
             Sign in
           </Link>
         </p>
@@ -149,3 +148,5 @@ export function RegisterPage() {
     </div>
   )
 }
+
+export default RegisterPage

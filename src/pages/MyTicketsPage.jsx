@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../shared/context/AuthContext'
-import { supabase } from '../../shared/services/supabase'
-import { ROUTES } from '../../shared/constants/routes'
-import { PageHeader } from '../../shared/components/PageHeader'
-import { FilterBar } from '../../shared/components/FilterBar'
-import { DataTable } from '../../shared/components/DataTable'
-import { StatusBadge } from '../../shared/components/StatusBadge'
-import { PriorityBadge } from '../../shared/components/PriorityBadge'
+import { useAuth } from '../context/AuthContext'
+import { supabase } from '../config/supabaseConfig'
+import { PageHeader } from '../components/PageHeader'
+import { FilterBar } from '../components/FilterBar'
+import { DataTable } from '../components/DataTable'
+import { StatusBadge } from '../components/StatusBadge'
+import { PriorityBadge } from '../components/PriorityBadge'
 import { PlusCircle } from 'lucide-react'
 
 const MOCK_MY_TICKETS = [
@@ -186,7 +185,7 @@ export function MyTicketsPage() {
         subtitle="Manage and check the progress of all your service requests."
         actions={
           <Link
-            to={ROUTES.CREATE_TICKET}
+            to="/tickets/new"
             className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition"
           >
             <PlusCircle className="h-4 w-4" />
@@ -224,3 +223,5 @@ export function MyTicketsPage() {
     </div>
   )
 }
+
+export default MyTicketsPage

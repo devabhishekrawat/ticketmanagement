@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../shared/context/AuthContext'
-import { supabase } from '../../shared/services/supabase'
-import { ROUTES } from '../../shared/constants/routes'
-import { PageHeader } from '../../shared/components/PageHeader'
-import { StatCard } from '../../shared/components/StatCard'
-import { DataTable } from '../../shared/components/DataTable'
-import { StatusBadge } from '../../shared/components/StatusBadge'
-import { PriorityBadge } from '../../shared/components/PriorityBadge'
+import { useAuth } from '../context/AuthContext'
+import { supabase } from '../config/supabaseConfig'
+import { PageHeader } from '../components/PageHeader'
+import { StatCard } from '../components/StatCard'
+import { DataTable } from '../components/DataTable'
+import { StatusBadge } from '../components/StatusBadge'
+import { PriorityBadge } from '../components/PriorityBadge'
 import { PlusCircle, Ticket, Clock, CheckCircle2, AlertCircle, ArrowUpRight } from 'lucide-react'
 
 const SAMPLE_TICKETS = [
@@ -157,7 +156,7 @@ export function UserDashboardPage() {
         subtitle="Track your IT tickets, check ongoing service requests, or report an issue."
         actions={
           <Link
-            to={ROUTES.CREATE_TICKET}
+            to="/tickets/new"
             className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition"
           >
             <PlusCircle className="h-4 w-4" />
@@ -179,8 +178,7 @@ export function UserDashboardPage() {
         </div>
       )}
 
-      {}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 mb-8">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 mb-8">
         <StatCard
           title="Total Tickets"
           value={totalCount}
@@ -214,15 +212,14 @@ export function UserDashboardPage() {
         />
       </div>
 
-      {}
-      <div className="space-y-4">
+            <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-base font-bold text-slate-900">Recent Service Requests</h2>
             <p className="text-xs text-slate-500">Click any row to open the conversation & check status</p>
           </div>
           <Link
-            to={ROUTES.MY_TICKETS}
+            to="/my-tickets"
             className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition"
           >
             View All Tickets &rarr;
@@ -245,3 +242,5 @@ export function UserDashboardPage() {
     </div>
   )
 }
+
+export default UserDashboardPage

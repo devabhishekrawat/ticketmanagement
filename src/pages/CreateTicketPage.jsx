@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../../shared/context/AuthContext'
-import { supabase } from '../../shared/services/supabase'
-import { ROUTES } from '../../shared/constants/routes'
-import { CATEGORIES, IMPACT_LEVELS, TICKET_PRIORITY, getSuggestedPriority } from '../../shared/constants/tickets'
-import { notify } from '../../shared/utils/toast'
-import { PageHeader } from '../../shared/components/PageHeader'
+import { useAuth } from '../context/AuthContext'
+import { supabase } from '../config/supabaseConfig'
+import { CATEGORIES, IMPACT_LEVELS, TICKET_PRIORITY, getSuggestedPriority } from '../constants/tickets'
+import { notify } from '../utils/toast'
+import { PageHeader } from '../components/PageHeader'
 import { ArrowLeft, Send, Upload, Sparkles } from 'lucide-react'
 
 export function CreateTicketPage() {
@@ -95,10 +94,10 @@ export function CreateTicketPage() {
       } catch (logErr) {}
 
       notify.ticketCreated(assignedNum)
-      navigate(ROUTES.MY_TICKETS)
+      navigate('/my-tickets')
     } catch (err) {
       notify.ticketCreated('TIK-1004 (Demo)')
-      navigate(ROUTES.MY_TICKETS)
+      navigate('/my-tickets')
     } finally {
       setSubmitting(false)
     }
@@ -109,7 +108,7 @@ export function CreateTicketPage() {
       <PageHeader
         breadcrumb={
           <Link
-            to={ROUTES.DASHBOARD}
+            to="/dashboard"
             className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
@@ -121,7 +120,6 @@ export function CreateTicketPage() {
       />
 
       <form onSubmit={handleSubmit} className="card space-y-6">
-        {}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="form-label">Category</label>
@@ -149,7 +147,6 @@ export function CreateTicketPage() {
           </div>
         </div>
 
-        {}
         <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -194,7 +191,6 @@ export function CreateTicketPage() {
           </div>
         </div>
 
-        {}
         <div>
           <label className="form-label">Detailed Description</label>
           <textarea
@@ -207,7 +203,6 @@ export function CreateTicketPage() {
           />
         </div>
 
-        {}
         <div>
           <label className="form-label">Attachments (Screenshots, logs)</label>
           <div className="border border-dashed border-slate-300 rounded-lg p-6 text-center hover:border-slate-400 bg-slate-50/50 transition">
@@ -228,9 +223,8 @@ export function CreateTicketPage() {
           </div>
         </div>
 
-        {}
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-          <Link to={ROUTES.DASHBOARD} className="btn btn-secondary">
+          <Link to="/dashboard" className="btn btn-secondary">
             Cancel
           </Link>
           <button type="submit" disabled={submitting} className="btn btn-primary">
@@ -242,3 +236,5 @@ export function CreateTicketPage() {
     </div>
   )
 }
+
+export default CreateTicketPage

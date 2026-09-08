@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../shared/context/AuthContext'
-import { supabase } from '../../shared/services/supabase'
-import { ROUTES } from '../../shared/constants/routes'
-import { PageHeader } from '../../shared/components/PageHeader'
-import { StatusBadge } from '../../shared/components/StatusBadge'
-import { PriorityBadge } from '../../shared/components/PriorityBadge'
-import { Avatar } from '../../shared/components/Avatar'
-import { ArrowLeft, Clock, Calendar, Shield, AlertCircle } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+import { supabase } from '../config/supabaseConfig'
+import { PageHeader } from '../components/PageHeader'
+import { StatusBadge } from '../components/StatusBadge'
+import { PriorityBadge } from '../components/PriorityBadge'
+import { Avatar } from '../components/Avatar'
+import { ArrowLeft } from 'lucide-react'
 
-import { CommentBox } from '../../src3/components/CommentBox'
-import { AttachmentWidget } from '../../src3/components/AttachmentWidget'
-import { TicketHistoryTimeline } from '../../src3/components/TicketHistoryTimeline'
-import { ResolutionVerifyBox } from '../../src3/components/ResolutionVerifyBox'
-import { useRealtimeTicket } from '../../src3/hooks/useRealtimeTicket'
+import { CommentBox } from '../components/CommentBox'
+import { AttachmentWidget } from '../components/AttachmentWidget'
+import { TicketHistoryTimeline } from '../components/TicketHistoryTimeline'
+import { ResolutionVerifyBox } from '../components/ResolutionVerifyBox'
+import { useRealtimeTicket } from '../hooks/useRealtimeTicket'
 
 const MOCK_DETAIL = {
   id: 'sample-2',
@@ -95,7 +94,7 @@ export function UserTicketDetailsPage() {
     return (
       <div className="mx-auto max-w-5xl px-4 py-12 text-center">
         <h2 className="text-lg font-bold text-slate-900">Ticket not found</h2>
-        <Link to={ROUTES.DASHBOARD} className="mt-2 text-sm text-blue-600 hover:underline">
+        <Link to="/dashboard" className="mt-2 text-sm text-blue-600 hover:underline">
           Return to Dashboard
         </Link>
       </div>
@@ -109,7 +108,7 @@ export function UserTicketDetailsPage() {
       <PageHeader
         breadcrumb={
           <Link
-            to={ROUTES.MY_TICKETS}
+            to="/my-tickets"
             className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-800"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
@@ -126,8 +125,7 @@ export function UserTicketDetailsPage() {
         }
       />
 
-      {}
-      {isResolved && (
+            {isResolved && (
         <div className="mb-6">
           <ResolutionVerifyBox
             ticket={ticket}
@@ -137,12 +135,9 @@ export function UserTicketDetailsPage() {
         </div>
       )}
 
-      {}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {}
-        <div className="lg:col-span-2 space-y-6">
-          {}
-          <div className="rounded-xl border border-slate-200 bg-white p-6 card-shadow">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <div className="lg:col-span-2 space-y-6">
+                    <div className="rounded-xl border border-slate-200 bg-white p-6 card-shadow">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
               Description & Details
             </h3>
@@ -168,23 +163,18 @@ export function UserTicketDetailsPage() {
             </div>
           </div>
 
-          {}
-          <AttachmentWidget ticketId={ticket.id} />
+                    <AttachmentWidget ticketId={ticket.id} />
 
-          {}
-          <CommentBox ticketId={ticket.id} />
+                    <CommentBox ticketId={ticket.id} />
         </div>
 
-        {}
-        <div className="space-y-6">
-          {}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 card-shadow space-y-4">
+                <div className="space-y-6">
+                    <div className="rounded-xl border border-slate-200 bg-white p-5 card-shadow space-y-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Ticket Details
             </h3>
 
-            {}
-            <div>
+                        <div>
               <p className="text-xs text-slate-400 mb-1">Assigned Specialist</p>
               {ticket.assignee ? (
                 <div className="flex items-center gap-2.5">
@@ -203,8 +193,7 @@ export function UserTicketDetailsPage() {
               )}
             </div>
 
-            {}
-            <div>
+                        <div>
               <p className="text-xs text-slate-400 mb-1">Review Status</p>
               <span className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${
                 ticket.approval_status === 'APPROVED'
@@ -222,8 +211,7 @@ export function UserTicketDetailsPage() {
               )}
             </div>
 
-            {}
-            <div>
+                        <div>
               <p className="text-xs text-slate-400 mb-1">Requester</p>
               <div className="text-xs font-semibold text-slate-800">
                 {ticket.created_by_profile?.full_name || 'You'}
@@ -234,10 +222,11 @@ export function UserTicketDetailsPage() {
             </div>
           </div>
 
-          {}
-          <TicketHistoryTimeline ticketId={ticket.id} />
+                    <TicketHistoryTimeline ticketId={ticket.id} />
         </div>
       </div>
     </div>
   )
 }
+
+export default UserTicketDetailsPage

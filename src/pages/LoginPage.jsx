@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../shared/context/AuthContext'
-import { ROUTES } from '../../shared/constants/routes'
-import { notify } from '../../shared/utils/toast'
+import { useAuth } from '../context/AuthContext'
+import { notify } from '../utils/toast'
 import { Ticket, ArrowRight, ShieldCheck, User } from 'lucide-react'
 
 export function LoginPage() {
@@ -23,7 +22,7 @@ export function LoginPage() {
     try {
       await signIn(email, password)
       notify.success('Welcome back!')
-      navigate(ROUTES.DASHBOARD)
+      navigate('/dashboard')
     } catch (err) {
       notify.error(err.message || 'Unable to sign in. Check your credentials.')
     } finally {
@@ -34,7 +33,7 @@ export function LoginPage() {
   const handleDemoSignIn = (role) => {
     demoLogin(role)
     notify.success(`Logged in as Demo ${role === 'ADMIN' ? 'Admin' : 'Employee'}`)
-    navigate(role === 'ADMIN' ? ROUTES.ADMIN_DASHBOARD : ROUTES.DASHBOARD)
+    navigate(role === 'ADMIN' ? '/admin' : '/dashboard')
   }
 
   return (
@@ -81,8 +80,7 @@ export function LoginPage() {
           </button>
         </form>
 
-        {}
-        <div className="pt-4 border-t border-slate-100">
+                <div className="pt-4 border-t border-slate-100">
           <p className="text-center text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
             Quick Reviewer Access
           </p>
@@ -108,7 +106,7 @@ export function LoginPage() {
 
         <p className="text-center text-xs text-slate-500">
           Don't have an account?{' '}
-          <Link to={ROUTES.REGISTER} className="font-semibold text-blue-600 hover:underline">
+          <Link to="/register" className="font-semibold text-blue-600 hover:underline">
             Register here
           </Link>
         </p>
@@ -116,3 +114,5 @@ export function LoginPage() {
     </div>
   )
 }
+
+export default LoginPage
