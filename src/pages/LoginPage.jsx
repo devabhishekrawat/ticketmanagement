@@ -56,7 +56,7 @@ export function LoginPage() {
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs">
             <Ticket className="h-6 w-6" />
           </div>
-          <h2 className="mt-3 text-xl font-bold text-slate-900">Sign in to IT Support</h2>
+          <h2 className="mt-3 text-xl font-bold text-slate-900">Sign in to Tickify</h2>
           <p className="text-xs text-slate-500 mt-1">
             Internal IT Helpdesk & Ticket Management
           </p>

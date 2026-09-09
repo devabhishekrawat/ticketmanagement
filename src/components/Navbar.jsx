@@ -32,8 +32,8 @@ export function Navbar() {
               <Ticket className="h-5 w-5" />
             </div>
             <div>
-              <span className="text-base font-bold tracking-tight text-slate-900">IT Support</span>
-              <span className="hidden text-xs text-slate-400 sm:inline ml-1 font-normal">Desk</span>
+              <span className="text-base font-bold tracking-tight text-slate-900">Tickify</span>
+              {/* <span className="hidden text-xs text-slate-400 sm:inline ml-1 font-normal">Desk</span> */}
             </div>
           </Link>
 
