@@ -62,7 +62,51 @@ export function CommentBox({ ticketId, isStaff = false }) {
 
   useEffect(() => {
     fetchComments()
-  }, [ticketId])
+
+    if (!ticketId || ticketId.startsWith('sample-') || ticketId.startsWith('t-')) return
+
+    const channel = supabase
+      .channel(`comments-realtime-${ticketId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'ticket_comments',
+          filter: `ticket_id=eq.${ticketId}`,
+        },
+        async (payload) => {
+          if (!payload.new?.id) return
+
+          const { data: fullComment } = await supabase
+            .from('ticket_comments')
+            .select(`
+              id,
+              content,
+              is_internal,
+              created_at,
+              user:user_id ( full_name, email, role, avatar_url )
+            `)
+            .eq('id', payload.new.id)
+            .maybeSingle()
+
+          if (fullComment) {
+            setComments((prev) => {
+              if (prev.some((c) => c.id === fullComment.id)) return prev
+              return [...prev, fullComment]
+            })
+            if (payload.new.user_id !== user?.id) {
+              notify.newComment(fullComment.user?.full_name || 'Teammate')
+            }
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [ticketId, user?.id])
 
   const handleAddComment = async (e) => {
     e.preventDefault()

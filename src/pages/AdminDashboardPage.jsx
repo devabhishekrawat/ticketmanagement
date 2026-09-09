@@ -146,6 +146,77 @@ export function AdminDashboardPage() {
 
   useEffect(() => {
     fetchAllTickets()
+
+    const channel = supabase
+      .channel(`admin-dashboard-${Date.now()}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'tickets' },
+        async (payload) => {
+          if (!payload.new?.id) return
+
+          let item = null
+          try {
+            const { data } = await supabase
+              .from('tickets')
+              .select(`
+                *,
+                created_by_profile:created_by ( full_name, email, department ),
+                assignee:assigned_to ( id, full_name, email, avatar_url ),
+                collaborators:ticket_collaborators ( user:user_id ( id, full_name, avatar_url ) )
+              `)
+              .eq('id', payload.new.id)
+              .maybeSingle()
+
+            if (data) {
+              item = {
+                ...data,
+                collaborators: data.collaborators ? data.collaborators.map((c) => c.user) : [],
+              }
+            }
+          } catch (e) {}
+
+          const finalTicket = item || payload.new
+          setTickets((prev) => [finalTicket, ...prev.filter((t) => t.id !== finalTicket.id)])
+          notify.info(`New ticket ${finalTicket.ticket_number || ''} received!`)
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'tickets' },
+        async (payload) => {
+          if (!payload.new?.id) return
+
+          let item = null
+          try {
+            const { data } = await supabase
+              .from('tickets')
+              .select(`
+                *,
+                created_by_profile:created_by ( full_name, email, department ),
+                assignee:assigned_to ( id, full_name, email, avatar_url ),
+                collaborators:ticket_collaborators ( user:user_id ( id, full_name, avatar_url ) )
+              `)
+              .eq('id', payload.new.id)
+              .maybeSingle()
+
+            if (data) {
+              item = {
+                ...data,
+                collaborators: data.collaborators ? data.collaborators.map((c) => c.user) : [],
+              }
+            }
+          } catch (e) {}
+
+          const finalTicket = item || payload.new
+          setTickets((prev) => prev.map((t) => (t.id === finalTicket.id ? { ...t, ...finalTicket } : t)))
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   const totalTickets = tickets.length

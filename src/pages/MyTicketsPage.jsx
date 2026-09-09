@@ -107,6 +107,23 @@ export function MyTicketsPage() {
     }
 
     fetchTickets()
+
+    if (!user?.id || user.id.startsWith('demo-')) return
+
+    const channel = supabase
+      .channel(`user-tickets-${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'tickets' },
+        () => {
+          fetchTickets()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [user])
 
   const filteredTickets = tickets.filter((t) => {
