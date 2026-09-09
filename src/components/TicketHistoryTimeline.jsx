@@ -117,7 +117,7 @@ export function TicketHistoryTimeline({ ticketId }) {
         <p className="text-xs text-slate-400 py-2">No activity recorded yet.</p>
       ) : (
         <div className="relative pl-4">
-          <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-slate-200" />
+          <div className="absolute left-[21px] top-2 bottom-2 w-0.5 bg-slate-200" />
         <div className="space-y-4">
           {history.map((item, idx) => (
             <div key={item.id || idx} className="relative flex items-start gap-3">
