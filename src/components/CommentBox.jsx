@@ -50,13 +50,13 @@ export function CommentBox({ ticketId, isStaff = false }) {
         .eq('ticket_id', ticketId)
         .order('created_at', { ascending: true })
 
-      if (error || !data || data.length === 0) {
-        setComments(MOCK_COMMENTS)
+      if (error) {
+        setComments([])
       } else {
-        setComments(data)
+        setComments(data || [])
       }
     } catch (err) {
-      setComments(MOCK_COMMENTS)
+      setComments([])
     }
   }
 

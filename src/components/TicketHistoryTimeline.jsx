@@ -65,13 +65,13 @@ export function TicketHistoryTimeline({ ticketId }) {
         .eq('ticket_id', ticketId)
         .order('created_at', { ascending: false })
 
-      if (error || !data || data.length === 0) {
-        setHistory(MOCK_HISTORY)
+      if (error) {
+        setHistory([])
       } else {
-        setHistory(data)
+        setHistory(data || [])
       }
     } catch (err) {
-      setHistory(MOCK_HISTORY)
+      setHistory([])
     }
   }
 
@@ -115,9 +115,11 @@ export function TicketHistoryTimeline({ ticketId }) {
         </h3>
       </div>
 
-      <div className="relative pl-4">
-        {}
-        <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-slate-200" />
+      {history.length === 0 ? (
+        <p className="text-xs text-slate-400 py-2">No activity recorded yet.</p>
+      ) : (
+        <div className="relative pl-4">
+          <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-slate-200" />
 
         <div className="space-y-4">
           {history.map((item, idx) => (
@@ -146,6 +148,7 @@ export function TicketHistoryTimeline({ ticketId }) {
           ))}
         </div>
       </div>
+      )}
     </div>
   )
 }
