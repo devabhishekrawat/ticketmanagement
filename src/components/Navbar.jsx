@@ -125,19 +125,6 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              {!isAdmin && (
-                <Link
-                  to="/tickets/new"
-                  className={`hidden sm:inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                    isActive('/tickets/new')
-                      ? 'bg-blue-700 text-white shadow-xs ring-2 ring-blue-300'
-                      : 'bg-blue-600 text-white shadow-xs hover:bg-blue-700'
-                  }`}
-                >
-                  <PlusCircle className="h-4 w-4" />
-                  New Ticket
-                </Link>
-              )}
               <Link
                 to="/tickets/new"
                 className={`hidden sm:inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition ${

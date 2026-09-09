@@ -27,3 +27,4 @@ dist-ssr
 *supabase/
 .env
 ARCHITECTURE.md
+projectDesc.md

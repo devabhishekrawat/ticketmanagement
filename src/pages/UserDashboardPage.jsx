@@ -184,18 +184,22 @@ export function UserDashboardPage() {
           value={totalCount}
           icon={Ticket}
           subtitle="All created by you"
+          color="blue"
         />
         <StatCard
           title="Pending Review"
           value={pendingCount}
           icon={Clock}
           subtitle="Waiting for IT approval"
+          color="amber"
+          active={pendingCount > 0}
         />
         <StatCard
           title="In Progress"
           value={inProgressCount}
           icon={ArrowUpRight}
           subtitle="Actively being worked"
+          color="purple"
         />
         <StatCard
           title="Resolved"
@@ -203,12 +207,14 @@ export function UserDashboardPage() {
           icon={CheckCircle2}
           subtitle="Awaiting your verification"
           active={resolvedCount > 0}
+          color="emerald"
         />
         <StatCard
           title="Closed"
           value={closedCount}
           icon={CheckCircle2}
           subtitle="Completed tickets"
+          color="blue"
         />
       </div>
 

@@ -21,6 +21,7 @@ import {
   Inbox,
   RefreshCw,
   SlidersHorizontal,
+  AlertTriangle,
 } from 'lucide-react'
 
 const ADMIN_MOCK_TICKETS = [
@@ -149,8 +150,8 @@ export function AdminDashboardPage() {
 
   const totalTickets = tickets.length
   const pendingReview = tickets.filter((t) => t.approval_status === 'PENDING' || t.status === 'NEW').length
-  const unassigned = tickets.filter((t) => !t.assigned_to && t.status !== 'CLOSED' && t.status !== 'REJECTED').length
   const inProgress = tickets.filter((t) => t.status === 'IN_PROGRESS' || t.status === 'ASSIGNED').length
+  const resolvedCount = tickets.filter((t) => t.status === 'RESOLVED' || t.status === 'CLOSED').length
   const urgentCount = tickets.filter((t) => (t.admin_priority || t.user_priority) === 'URGENT').length
 
   const filteredTickets = tickets.filter((t) => {
@@ -379,35 +380,57 @@ export function AdminDashboardPage() {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 mb-8">
         <StatCard
-          title="Total Tickets"
+          title="Total Workload"
           value={totalTickets}
           icon={Ticket}
-          subtitle="System all-time"
+          subtitle="All-time volume"
+          color="blue"
+          onClick={() => {
+            setStatusFilter('ALL')
+            setPriorityFilter('ALL')
+            setCategoryFilter('ALL')
+            setSearch('')
+          }}
         />
         <StatCard
           title="Pending Triage"
           value={pendingReview}
           icon={Clock}
-          subtitle="Requires priority approval"
+          subtitle="Needs priority approval"
           active={pendingReview > 0}
-        />
-        <StatCard
-          title="Unassigned"
-          value={unassigned}
-          icon={UserX}
-          subtitle="Need support lead"
+          color="amber"
+          onClick={() => navigate('/admin/review')}
         />
         <StatCard
           title="In Progress"
           value={inProgress}
           icon={Activity}
-          subtitle="Actively worked"
+          subtitle="Actively resolving"
+          color="purple"
+          onClick={() => {
+            setStatusFilter('IN_PROGRESS')
+          }}
         />
         <StatCard
-          title="Urgent Alerts"
-          value={urgentCount}
+          title="Resolved & Closed"
+          value={resolvedCount}
           icon={CheckCircle2}
-          subtitle="High business impact"
+          subtitle="Successfully completed"
+          color="emerald"
+          onClick={() => {
+            setStatusFilter('RESOLVED')
+          }}
+        />
+        <StatCard
+          title="Critical & Urgent"
+          value={urgentCount}
+          icon={AlertTriangle}
+          subtitle="Immediate action required"
+          active={urgentCount > 0}
+          color="rose"
+          onClick={() => {
+            setPriorityFilter('URGENT')
+          }}
         />
       </div>
 

@@ -35,7 +35,6 @@ const router = createBrowserRouter([
         index: true,
         element: (
           <ProtectedRoute>
-            <UserDashboardPage />
             <RootRedirect />
           </ProtectedRoute>
         ),

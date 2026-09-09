@@ -20,10 +20,8 @@ export function LoginPage() {
 
     setSubmitting(true)
     try {
-      await signIn(email, password)
       const result = await signIn(email, password)
       notify.success('Welcome back!')
-      navigate('/dashboard')
       const role = result?.profile?.role
       if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
         navigate('/admin')

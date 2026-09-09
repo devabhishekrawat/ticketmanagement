@@ -21,6 +21,10 @@
     border-color: $border-focus;
     box-shadow: 0 0 0 rem(1px) $border-focus;
   }
+
+  &.w-auto {
+    width: auto;
+  }
 }
 
 .form-label {
