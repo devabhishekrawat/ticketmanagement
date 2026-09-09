@@ -49,7 +49,6 @@ export function CommentBox({ ticketId, isStaff = false }) {
         `)
         .eq('ticket_id', ticketId)
         .order('created_at', { ascending: true })
- 
       if (error) {
         setComments([])
       } else {
