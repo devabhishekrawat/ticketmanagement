@@ -6,7 +6,8 @@ import { PageHeader } from '../components/PageHeader'
 import { StatusBadge } from '../components/StatusBadge'
 import { PriorityBadge } from '../components/PriorityBadge'
 import { Avatar } from '../components/Avatar'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, Clock } from 'lucide-react'
+import { notify } from '../utils/toast'
 
 import { CommentBox } from '../components/CommentBox'
 import { AttachmentWidget } from '../components/AttachmentWidget'
@@ -78,8 +79,46 @@ export function UserTicketDetailsPage() {
     setTicket((prev) => (prev ? { ...prev, ...updatedPayload } : prev))
   })
 
+  const [updatingStatus, setUpdatingStatus] = useState(false)
+
   const handleStatusChange = (newStatus) => {
     setTicket((prev) => (prev ? { ...prev, status: newStatus } : prev))
+  }
+
+  const handleAssigneeStatusUpdate = async (newStatus) => {
+    setUpdatingStatus(true)
+    try {
+      if (ticket.id && !ticket.id.startsWith('sample-') && !ticket.id.startsWith('t-')) {
+        await supabase
+          .from('tickets')
+          .update({
+            status: newStatus,
+            resolved_at: newStatus === 'RESOLVED' ? new Date().toISOString() : null,
+          })
+          .eq('id', ticket.id)
+
+        await supabase.from('ticket_history').insert({
+          ticket_id: ticket.id,
+          actor_id: user?.id && !user.id.startsWith('demo-') ? user.id : null,
+          action: 'STATUS_CHANGE',
+          old_value: ticket.status,
+          new_value: newStatus,
+          notes:
+            newStatus === 'RESOLVED'
+              ? 'Assigned specialist marked ticket as resolved.'
+              : 'Assigned specialist started working on ticket.',
+        })
+      }
+
+      setTicket((prev) => (prev ? { ...prev, status: newStatus } : prev))
+      if (newStatus === 'RESOLVED') notify.ticketResolved()
+      else notify.success(`Status updated to ${newStatus}`)
+    } catch (err) {
+      console.warn('Assignee status update error:', err.message)
+      setTicket((prev) => (prev ? { ...prev, status: newStatus } : prev))
+    } finally {
+      setUpdatingStatus(false)
+    }
   }
 
   if (loading) {
@@ -102,6 +141,8 @@ export function UserTicketDetailsPage() {
   }
 
   const isResolved = ticket.status === 'RESOLVED'
+  const isAssignee = user?.id === ticket.assigned_to
+  const isRequester = user?.id === ticket.created_by
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
@@ -125,13 +166,62 @@ export function UserTicketDetailsPage() {
         }
       />
 
-            {isResolved && (
+      {isAssignee && ticket.status !== 'RESOLVED' && ticket.status !== 'CLOSED' && (
+        <div className="mb-6 rounded-2xl border border-blue-200 bg-blue-50/70 p-5 card-shadow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs">
+              <CheckCircle2 className="h-5 w-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-slate-900">You are the Assigned Specialist</h4>
+              <p className="text-xs text-slate-600 mt-0.5">
+                {ticket.status === 'IN_PROGRESS'
+                  ? 'When you have resolved the issue, click Mark as Resolved to notify the requester for verification.'
+                  : 'Acknowledge this ticket and start working on the resolution.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            {ticket.status !== 'IN_PROGRESS' && (
+              <button
+                onClick={() => handleAssigneeStatusUpdate('IN_PROGRESS')}
+                disabled={updatingStatus}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-blue-300 bg-white px-3.5 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition shadow-xs disabled:opacity-50"
+              >
+                <Clock className="h-3.5 w-3.5" />
+                {updatingStatus ? 'Updating...' : 'Mark In Progress'}
+              </button>
+            )}
+
+            <button
+              onClick={() => handleAssigneeStatusUpdate('RESOLVED')}
+              disabled={updatingStatus}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 transition shadow-xs disabled:opacity-50"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              {updatingStatus ? 'Updating...' : 'Mark as Resolved'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isResolved && isRequester && (
         <div className="mb-6">
           <ResolutionVerifyBox
             ticket={ticket}
             onVerified={() => handleStatusChange('CLOSED')}
             onReopened={() => handleStatusChange('REOPENED')}
           />
+        </div>
+      )}
+
+      {isResolved && !isRequester && (
+        <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 card-shadow flex items-center gap-3">
+          <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+          <p className="text-xs text-emerald-900">
+            This ticket is marked as <strong>Resolved</strong>. Waiting for the requester ({ticket.created_by_profile?.full_name || 'Requester'}) to test and confirm closure.
+          </p>
         </div>
       )}
 

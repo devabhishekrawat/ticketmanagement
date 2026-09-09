@@ -114,35 +114,53 @@ export function CommentBox({ ticketId, isStaff = false }) {
     setSubmitting(true)
     const content = newComment.trim()
     const authorName = profile?.full_name || user?.email?.split('@')[0] || 'You'
- 
-    const localItem = {
-      id: `c-${Date.now()}`,
-      content,
-      is_internal: isInternal,
-      created_at: new Date().toISOString(),
-      user: {
-        full_name: authorName,
-        email: user?.email,
-        role: profile?.role || 'USER',
-      },
-    }
- 
     try {
       if (user?.id && !user.id.startsWith('demo-')) {
-        await supabase.from('ticket_comments').insert({
-          ticket_id: ticketId,
-          user_id: user.id,
+        const { data: insertedComment, error } = await supabase
+          .from('ticket_comments')
+          .insert({
+            ticket_id: ticketId,
+            user_id: user.id,
+            content,
+            is_internal: isInternal,
+          })
+          .select(`
+            id,
+            content,
+            is_internal,
+            created_at,
+            user:user_id ( full_name, email, role, avatar_url )
+          `)
+          .single()
+
+        if (error) throw error
+
+        if (insertedComment) {
+          setComments((prev) => {
+            if (prev.some((c) => c.id === insertedComment.id)) return prev
+            return [...prev, insertedComment]
+          })
+        }
+      } else {
+        const localItem = {
+          id: `c-${Date.now()}`,
           content,
           is_internal: isInternal,
-        })
+          created_at: new Date().toISOString(),
+          user: {
+            full_name: authorName,
+            email: user?.email,
+            role: profile?.role || 'USER',
+          },
+        }
+        setComments((prev) => [...prev, localItem])
       }
-    } catch (e) {
-      console.warn('Comment upload fallback')
-    } finally {
-      setComments((prev) => [...prev, localItem])
       setNewComment('')
+    } catch (e) {
+      console.warn('Comment upload error:', e?.message)
+      notify.error('Failed to post comment.')
+    } finally {
       setSubmitting(false)
-      notify.newComment(authorName)
     }
   }
  
