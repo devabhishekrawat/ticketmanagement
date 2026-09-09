@@ -9,52 +9,6 @@ import { StatusBadge } from '../components/StatusBadge'
 import { PriorityBadge } from '../components/PriorityBadge'
 import { PlusCircle } from 'lucide-react'
 
-const MOCK_MY_TICKETS = [
-  {
-    id: 'sample-1',
-    ticket_number: 'TIK-1001',
-    title: 'Cannot access internal Git repository via VPN',
-    category: 'Network',
-    status: 'IN_PROGRESS',
-    user_priority: 'HIGH',
-    admin_priority: 'HIGH',
-    created_at: new Date(Date.now() - 3600000 * 4).toISOString(),
-    assignee: { full_name: 'David Support' },
-  },
-  {
-    id: 'sample-2',
-    ticket_number: 'TIK-1002',
-    title: 'Request upgrade to Figma professional seat',
-    category: 'Software',
-    status: 'RESOLVED',
-    user_priority: 'MEDIUM',
-    admin_priority: 'MEDIUM',
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-    assignee: { full_name: 'IT Admin' },
-  },
-  {
-    id: 'sample-3',
-    ticket_number: 'TIK-1003',
-    title: 'Monitor flickering when connecting via HDMI dock',
-    category: 'Hardware',
-    status: 'NEW',
-    user_priority: 'LOW',
-    admin_priority: 'LOW',
-    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-    assignee: null,
-  },
-  {
-    id: 'sample-4',
-    ticket_number: 'TIK-1004',
-    title: 'Password reset for Staging AWS account',
-    category: 'Access & Security',
-    status: 'CLOSED',
-    user_priority: 'MEDIUM',
-    admin_priority: 'MEDIUM',
-    created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
-    assignee: { full_name: 'David Support' },
-  },
-]
 
 export function MyTicketsPage() {
   const { user } = useAuth()
