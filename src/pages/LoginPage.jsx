@@ -30,13 +30,27 @@ export function LoginPage() {
       }
     } catch (err) {
       notify.error(err.message || 'Unable to sign in. Check your credentials.')
-    } finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+    <div className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+      {submitting && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/30 backdrop-blur-xs">
+          <div className="flex flex-col items-center gap-3 rounded-2xl bg-white p-6 shadow-2xl border border-slate-100 min-w-[240px] text-center">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <Ticket className="h-6 w-6 text-blue-600 animate-pulse" />
+              <div className="absolute inset-0 rounded-xl border-2 border-blue-600 border-t-transparent animate-spin" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-slate-900">Signing in...</p>
+              <p className="text-xs text-slate-500 mt-0.5">Redirecting to Dashboard</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="card w-full max-w-md space-y-6">
         <div className="text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs">
@@ -73,9 +87,22 @@ export function LoginPage() {
             />
           </div>
 
-          <button type="submit" disabled={submitting} className="btn btn-primary w-full py-2.5">
-            {submitting ? 'Signing in...' : 'Sign In'}
-            <ArrowRight className="h-4 w-4" />
+          <button
+            type="submit"
+            disabled={submitting}
+            className="btn btn-primary w-full py-2.5 flex items-center justify-center gap-2"
+          >
+            {submitting ? (
+              <>
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                <span>Redirecting to Dashboard...</span>
+              </>
+            ) : (
+              <>
+                <span>Sign In</span>
+                <ArrowRight className="h-4 w-4" />
+              </>
+            )}
           </button>
         </form>
 

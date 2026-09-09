@@ -1,14 +1,12 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-export default function AdminRoute({ children }) {
-  const { user, loading, isAdmin } = useAuth()
+import Loader from './Loader'
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-      </div>
-    )
+export default function AdminRoute({ children }) {
+  const { user, loading, isAdmin, profile } = useAuth()
+
+  if (loading || (user && !profile)) {
+    return <Loader text="Verifying administrator permissions..." />
   }
 
   if (!user) {

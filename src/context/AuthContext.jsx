@@ -87,6 +87,7 @@ export function AuthProvider({ children }) {
     if (error) throw error
 
     if (data?.user) {
+      setUser(data.user)
       const { data: prof } = await supabase
         .from('profiles')
         .select('*')
@@ -96,6 +97,16 @@ export function AuthProvider({ children }) {
       if (prof) {
         setProfile(prof)
         return { ...data, profile: prof }
+      } else {
+        const fallback = {
+          id: data.user.id,
+          email: data.user.email,
+          full_name: data.user.email?.split('@')[0] || 'User',
+          role: 'USER',
+          department: 'General',
+        }
+        setProfile(fallback)
+        return { ...data, profile: fallback }
       }
     }
 

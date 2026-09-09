@@ -21,7 +21,10 @@ const ReassignmentInboxPage = lazy(() => import('../pages/ReassignmentInboxPage'
 const AdminTicketDetailsPage = lazy(() => import('../pages/AdminTicketDetailsPage'))
 
 function RootRedirect() {
-  const { isAdmin } = useAuth()
+  const { user, profile, isAdmin, loading } = useAuth()
+  if (loading || (user && !profile)) {
+    return <Loader text="Loading workspace..." />
+  }
   return isAdmin ? <Navigate to="/admin" replace /> : <UserDashboardPage />
 }
 
