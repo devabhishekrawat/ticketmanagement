@@ -192,7 +192,6 @@ export function UserDashboardPage() {
           icon={Clock}
           subtitle="Waiting for IT approval"
           color="amber"
-          active={pendingCount > 0}
         />
         <StatCard
           title="In Progress"
@@ -206,7 +205,6 @@ export function UserDashboardPage() {
           value={resolvedCount}
           icon={CheckCircle2}
           subtitle="Awaiting your verification"
-          active={resolvedCount > 0}
           color="emerald"
         />
         <StatCard
