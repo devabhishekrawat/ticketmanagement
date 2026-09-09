@@ -221,8 +221,8 @@ export function AdminDashboardPage() {
 
   const totalTickets = tickets.length
   const pendingReview = tickets.filter((t) => t.approval_status === 'PENDING' || t.status === 'NEW').length
-  const inProgress = tickets.filter((t) => t.status === 'IN_PROGRESS' || t.status === 'ASSIGNED').length
-  const resolvedCount = tickets.filter((t) => t.status === 'RESOLVED' || t.status === 'CLOSED').length
+  const inProgressAndAssigned = tickets.filter((t) => t.status === 'IN_PROGRESS' || t.status === 'ASSIGNED').length
+  const resolvedAndClosed = tickets.filter((t) => t.status === 'RESOLVED' || t.status === 'CLOSED').length
   const urgentCount = tickets.filter((t) => (t.admin_priority || t.user_priority) === 'URGENT').length
 
   const filteredTickets = tickets.filter((t) => {
@@ -232,7 +232,14 @@ export function AdminDashboardPage() {
       t.ticket_number.toLowerCase().includes(search.toLowerCase()) ||
       (t.created_by_profile?.full_name || '').toLowerCase().includes(search.toLowerCase())
 
-    const matchesStatus = statusFilter === 'ALL' || t.status === statusFilter
+    const matchesStatus =
+      statusFilter === 'ALL'
+        ? true
+        : statusFilter === 'IN_PROGRESS_AND_ASSIGNED'
+        ? t.status === 'IN_PROGRESS' || t.status === 'ASSIGNED'
+        : statusFilter === 'RESOLVED_AND_CLOSED'
+        ? t.status === 'RESOLVED' || t.status === 'CLOSED'
+        : t.status === statusFilter
     const matchesPriority =
       priorityFilter === 'ALL' || (t.admin_priority || t.user_priority) === priorityFilter
     const matchesCategory = categoryFilter === 'ALL' || t.category === categoryFilter
@@ -472,23 +479,23 @@ export function AdminDashboardPage() {
           onClick={() => navigate('/admin/review')}
         />
         <StatCard
-          title="In Progress"
-          value={inProgress}
+          title="In Progress & Assigned"
+          value={inProgressAndAssigned}
           icon={Activity}
-          subtitle="Actively resolving"
+          subtitle="Actively resolving & assigned"
           color="purple"
           onClick={() => {
-            setStatusFilter('IN_PROGRESS')
+            setStatusFilter(statusFilter === 'IN_PROGRESS_AND_ASSIGNED' ? 'ALL' : 'IN_PROGRESS_AND_ASSIGNED')
           }}
         />
         <StatCard
           title="Resolved & Closed"
-          value={resolvedCount}
+          value={resolvedAndClosed}
           icon={CheckCircle2}
           subtitle="Successfully completed"
           color="emerald"
           onClick={() => {
-            setStatusFilter('RESOLVED')
+            setStatusFilter(statusFilter === 'RESOLVED_AND_CLOSED' ? 'ALL' : 'RESOLVED_AND_CLOSED')
           }}
         />
         <StatCard

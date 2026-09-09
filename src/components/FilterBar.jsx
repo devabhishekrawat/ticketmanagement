@@ -90,6 +90,8 @@ export function FilterBar({
                 className="form-select text-xs py-1.5"
               >
                 <option value="ALL">All Statuses</option>
+                <option value="IN_PROGRESS_AND_ASSIGNED">In Progress & Assigned</option>
+                <option value="RESOLVED_AND_CLOSED">Resolved & Closed</option>
                 {Object.values(TICKET_STATUS).map((status) => (
                   <option key={status} value={status}>
                     {status}
@@ -145,7 +147,12 @@ export function FilterBar({
 
           {statusFilter && statusFilter !== 'ALL' && (
             <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
-              Status: {statusFilter}
+              Status:{' '}
+              {statusFilter === 'IN_PROGRESS_AND_ASSIGNED'
+                ? 'In Progress & Assigned'
+                : statusFilter === 'RESOLVED_AND_CLOSED'
+                ? 'Resolved & Closed'
+                : statusFilter}
               <button
                 type="button"
                 onClick={() => onStatusChange('ALL')}
