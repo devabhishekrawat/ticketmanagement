@@ -422,6 +422,7 @@ export function AdminDashboardPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      
       <PageHeader
         title="IT Support Overview"
         subtitle="Operations dashboard, triage tickets, manage assignees, and track resolution health."

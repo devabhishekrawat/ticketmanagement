@@ -130,6 +130,7 @@ export function AssigneeSelectModal({ ticket, isOpen, onClose, onAssign }) {
             onClick={handleConfirm}
             className="btn btn-sm btn-primary"
           >
+            
             <UserCheck className="h-4 w-4" />
             {submitting ? 'Assigning...' : 'Confirm Assignment'}
           </button>
