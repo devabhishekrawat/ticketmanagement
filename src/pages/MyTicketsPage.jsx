@@ -93,11 +93,12 @@ export function MyTicketsPage() {
   })
 
   const filteredTickets = scopedTickets.filter((t) => {
+    const cleanSearch = search.trim().toLowerCase()
     const matchesSearch =
-      !search ||
-      t.title.toLowerCase().includes(search.toLowerCase()) ||
-      t.ticket_number.toLowerCase().includes(search.toLowerCase()) ||
-      t.category.toLowerCase().includes(search.toLowerCase())
+      !cleanSearch ||
+      t.title.toLowerCase().includes(cleanSearch) ||
+      t.ticket_number.toLowerCase().includes(cleanSearch) ||
+      t.category.toLowerCase().includes(cleanSearch)
 
     const matchesStatus = statusFilter === 'ALL' || t.status === statusFilter
     const matchesPriority =

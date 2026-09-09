@@ -5,10 +5,10 @@ import { TICKET_STATUS, TICKET_PRIORITY } from '../constants/tickets'
 import { PageHeader } from '../components/PageHeader'
 import { StatusBadge } from '../components/StatusBadge'
 import { PriorityBadge } from '../components/PriorityBadge'
-import { Avatar, AvatarStack } from '../components/Avatar'
+import { Avatar } from '../components/Avatar'
 import { AssigneeSelectModal } from '../components/AssigneeSelectModal'
 import { notify } from '../utils/toast'
-import { ArrowLeft, UserPlus, ShieldAlert, CheckCircle2, UserCheck, RefreshCw } from 'lucide-react'
+import { ArrowLeft, ShieldAlert, CheckCircle2, UserCheck, RefreshCw } from 'lucide-react'
 
 import { CommentBox } from '../components/CommentBox'
 import { AttachmentWidget } from '../components/AttachmentWidget'
@@ -30,7 +30,6 @@ const MOCK_ADMIN_DETAIL = {
   created_at: new Date(Date.now() - 3600000 * 6).toISOString(),
   created_by_profile: { full_name: 'John Miller', email: 'john@company.internal', department: 'Sales' },
   assignee: { id: 'staff-1', full_name: 'David Support', email: 'david@company.internal', department: 'IT Helpdesk' },
-  collaborators: [{ id: 'staff-3', full_name: 'Michael Lin', email: 'michael@company.internal', department: 'Network Infra' }],
 }
 
 export function AdminTicketDetailsPage() {
@@ -53,8 +52,7 @@ export function AdminTicketDetailsPage() {
         .select(`
           *,
           created_by_profile:created_by ( full_name, email, department ),
-          assignee:assigned_to ( id, full_name, email, department, avatar_url ),
-          collaborators:ticket_collaborators ( user:user_id ( id, full_name, email, department, avatar_url ) )
+          assignee:assigned_to ( id, full_name, email, department, avatar_url )
         `)
         .eq('id', id)
         .maybeSingle()
@@ -62,10 +60,7 @@ export function AdminTicketDetailsPage() {
       if (error || !data) {
         setTicket({ ...MOCK_ADMIN_DETAIL, id })
       } else {
-        setTicket({
-          ...data,
-          collaborators: data.collaborators ? data.collaborators.map((c) => c.user) : [],
-        })
+        setTicket(data)
       }
     } catch (err) {
       setTicket({ ...MOCK_ADMIN_DETAIL, id })
@@ -157,28 +152,6 @@ export function AdminTicketDetailsPage() {
     notify.ticketAssigned(assigneeName)
   }
 
-  const handleAddCollaborator = async () => {
-    const name = prompt('Enter specialist name to add to collaborative channel:')
-    if (!name) return
-
-    const newCollab = { id: `collab-${Date.now()}`, full_name: name, department: 'Support Specialist' }
-    setTicket((prev) => ({
-      ...prev,
-      collaborators: [...(prev.collaborators || []), newCollab],
-    }))
-
-    try {
-      await supabase.from('ticket_history').insert({
-        ticket_id: ticket.id,
-        action: 'COLLABORATOR_ADDED',
-        new_value: name,
-        notes: `Added ${name} as support collaborator`,
-      })
-    } catch (e) {}
-
-    notify.success(`Added ${name} to ticket workspace`)
-  }
-
   if (loading) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-12 text-center text-sm text-slate-500">
@@ -197,10 +170,6 @@ export function AdminTicketDetailsPage() {
       </div>
     )
   }
-
-  const allAssignees = []
-  if (ticket.assignee) allAssignees.push(ticket.assignee)
-  if (ticket.collaborators) allAssignees.push(...ticket.collaborators)
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -269,14 +238,6 @@ export function AdminTicketDetailsPage() {
             <RefreshCw className="h-3.5 w-3.5 text-blue-600" />
             Reassign Lead
           </button>
-
-          <button
-            onClick={handleAddCollaborator}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-xs"
-          >
-            <UserPlus className="h-3.5 w-3.5 text-purple-600" />
-            Add Collaborator
-          </button>
         </div>
       </div>
 
@@ -319,11 +280,11 @@ export function AdminTicketDetailsPage() {
         <div className="space-y-6">
           <div className="rounded-xl border border-slate-200 bg-white p-5 card-shadow space-y-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Assigned Team
+              Assigned Specialist
             </h3>
 
             <div>
-              <p className="text-xs text-slate-400 mb-1">Primary Support Lead</p>
+              <p className="text-xs text-slate-400 mb-1">Assignee</p>
               {ticket.assignee ? (
                 <div className="flex items-center gap-2.5">
                   <Avatar name={ticket.assignee.full_name} size="sm" />
@@ -332,7 +293,7 @@ export function AdminTicketDetailsPage() {
                       {ticket.assignee.full_name}
                     </div>
                     <div className="text-[11px] text-slate-400">
-                      {ticket.assignee.department || 'Support Lead'}
+                      {ticket.assignee.department || 'Support Specialist'}
                     </div>
                   </div>
                 </div>
@@ -340,20 +301,6 @@ export function AdminTicketDetailsPage() {
                 <span className="text-xs text-rose-500 font-medium italic">Unassigned (Action required)</span>
               )}
             </div>
-
-            {ticket.collaborators && ticket.collaborators.length > 0 && (
-              <div>
-                <p className="text-xs text-slate-400 mb-1.5">Collaborating Specialists</p>
-                <div className="space-y-2">
-                  {ticket.collaborators.map((c, i) => (
-                    <div key={c.id || i} className="flex items-center gap-2">
-                      <Avatar name={c.full_name} size="xs" />
-                      <span className="text-xs text-slate-700">{c.full_name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <div className="pt-2 border-t border-slate-100">
               <p className="text-xs text-slate-400 mb-1">Requester</p>

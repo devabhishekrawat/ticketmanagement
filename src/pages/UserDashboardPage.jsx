@@ -7,7 +7,7 @@ import { StatCard } from '../components/StatCard'
 import { DataTable } from '../components/DataTable'
 import { StatusBadge } from '../components/StatusBadge'
 import { PriorityBadge } from '../components/PriorityBadge'
-import { PlusCircle, Ticket, Clock, CheckCircle2, AlertCircle, ArrowUpRight, UserCheck } from 'lucide-react'
+import { PlusCircle, Ticket, Clock, CheckCircle2, AlertCircle, ArrowUpRight, UserCheck, Search, X } from 'lucide-react'
 
 export function UserDashboardPage() {
   const { user, profile } = useAuth()
@@ -16,6 +16,7 @@ export function UserDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [dbError, setDbError] = useState(null)
   const [activeTab, setActiveTab] = useState('RAISED')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     const fetchUserTickets = async () => {
@@ -71,9 +72,16 @@ export function UserDashboardPage() {
   const inProgressCount = tickets.filter((t) => t.status === 'IN_PROGRESS' || t.status === 'ASSIGNED').length
   const resolvedCount = tickets.filter((t) => t.status === 'RESOLVED').length
 
+  const cleanSearch = search.trim().toLowerCase()
   const displayTickets = tickets.filter((t) => {
-    if (activeTab === 'RAISED') return t.created_by === user?.id
-    return t.assigned_to === user?.id
+    const matchesTab = activeTab === 'RAISED' ? t.created_by === user?.id : t.assigned_to === user?.id
+    if (!matchesTab) return false
+    if (!cleanSearch) return true
+    return (
+      t.title.toLowerCase().includes(cleanSearch) ||
+      t.ticket_number.toLowerCase().includes(cleanSearch) ||
+      t.category.toLowerCase().includes(cleanSearch)
+    )
   })
 
   const columns = [
@@ -238,12 +246,34 @@ export function UserDashboardPage() {
             </button>
           </div>
 
-          <Link
-            to="/my-tickets"
-            className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition"
-          >
-            View All in My Tickets &rarr;
-          </Link>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value.trimStart())}
+                placeholder="Search tickets..."
+                className="form-input !py-1.5 !pl-8 !pr-7 text-xs w-44 sm:w-56"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+
+            <Link
+              to="/my-tickets"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition whitespace-nowrap"
+            >
+              View All in My Tickets &rarr;
+            </Link>
+          </div>
         </div>
 
         {loading ? (
@@ -256,7 +286,9 @@ export function UserDashboardPage() {
             data={displayTickets}
             onRowClick={(row) => navigate(`/tickets/${row.id}`)}
             emptyMessage={
-              activeTab === 'RAISED'
+              search.trim()
+                ? 'No tickets found matching your search.'
+                : activeTab === 'RAISED'
                 ? 'You haven’t raised any IT tickets yet.'
                 : 'No tickets are currently assigned to you.'
             }

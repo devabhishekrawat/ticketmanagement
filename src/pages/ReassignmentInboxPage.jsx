@@ -6,7 +6,7 @@ import { DataTable } from '../components/DataTable'
 import { Avatar } from '../components/Avatar'
 import { AssigneeSelectModal } from '../components/AssigneeSelectModal'
 import { notify } from '../utils/toast'
-import { ArrowLeft, UserPlus, RefreshCw, XCircle, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, RefreshCw, XCircle, CheckCircle2 } from 'lucide-react'
 
 const MOCK_REASSIGNMENTS = [
   {
@@ -90,37 +90,6 @@ export function ReassignmentInboxPage() {
     notify.ticketAssigned(assigneeName)
   }
 
-  const handleAddCollaborator = async (request) => {
-    const helperName = prompt('Enter technician or specialist name to add as collaborator:')
-    if (!helperName) return
-
-    try {
-      await supabase.from('ticket_collaborators').insert({
-        ticket_id: request.ticket_id,
-        user_id: request.requested_by || 'staff-3',
-      })
-
-      await supabase
-        .from('ticket_reassignment_requests')
-        .update({
-          status: 'APPROVED',
-          admin_notes: `Added collaborator: ${helperName}`,
-          resolved_at: new Date().toISOString(),
-        })
-        .eq('id', request.id)
-
-      await supabase.from('ticket_history').insert({
-        ticket_id: request.ticket_id,
-        action: 'COLLABORATOR_ADDED',
-        new_value: helperName,
-        notes: `Kept current assignee and added ${helperName} as collaborator`,
-      })
-    } catch (e) {}
-
-    setRequests((prev) => prev.filter((r) => r.id !== request.id))
-    notify.success(`Added ${helperName} as co-assignee / collaborator!`)
-  }
-
   const handleRejectRequest = async (request) => {
     const reason = prompt('Specify rejection feedback for the technician:') || 'Please continue diagnostics with standard playbook.'
 
@@ -202,13 +171,6 @@ export function ReassignmentInboxPage() {
             Reassign
           </button>
           <button
-            onClick={() => handleAddCollaborator(row)}
-            className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 transition"
-          >
-            <UserPlus className="h-3 w-3 text-purple-600" />
-            Add Collaborator
-          </button>
-          <button
             onClick={() => handleRejectRequest(row)}
             className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 transition"
           >
@@ -232,8 +194,8 @@ export function ReassignmentInboxPage() {
             Back to Support Overview
           </Link>
         }
-        title="Reassignment & Help Requests"
-        subtitle="Review requests from specialists who need reassignment or secondary collaborators."
+        title="Reassignment Requests"
+        subtitle="Review requests from specialists who need ticket reassignment."
       />
 
       {loading ? (

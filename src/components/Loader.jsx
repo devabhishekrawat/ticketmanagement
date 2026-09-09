@@ -6,4 +6,3 @@ export default function Loader({ text = 'Loading...' }) {
     </div>
   )
 }
-

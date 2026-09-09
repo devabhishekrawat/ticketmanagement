@@ -96,8 +96,6 @@ export function TicketHistoryTimeline({ ticketId }) {
         return 'Requester Reopened Ticket'
       case 'VERIFIED_AND_CLOSED':
         return 'Requester Confirmed Fix & Closed'
-      case 'COLLABORATOR_ADDED':
-        return `Added Collaborator: ${item.new_value}`
       case 'REASSIGNED_BY_ADMIN':
         return `Reassigned to ${item.new_value}`
       default:

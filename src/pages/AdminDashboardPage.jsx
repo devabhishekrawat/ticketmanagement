@@ -8,7 +8,7 @@ import { FilterBar } from '../components/FilterBar'
 import { DataTable } from '../components/DataTable'
 import { StatusBadge } from '../components/StatusBadge'
 import { PriorityBadge } from '../components/PriorityBadge'
-import { AvatarStack } from '../components/Avatar'
+import { Avatar } from '../components/Avatar'
 import { TicketReviewModal } from '../components/TicketReviewModal'
 import { AssigneeSelectModal } from '../components/AssigneeSelectModal'
 import { notify } from '../utils/toast'
@@ -38,7 +38,6 @@ const ADMIN_MOCK_TICKETS = [
     created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
     created_by_profile: { full_name: 'John Miller', department: 'Sales' },
     assignee: { id: 'staff-1', full_name: 'David Support', email: 'david@company.internal' },
-    collaborators: [{ id: 'staff-3', full_name: 'Michael Lin' }],
   },
   {
     id: 't-102',
@@ -53,7 +52,6 @@ const ADMIN_MOCK_TICKETS = [
     created_at: new Date(Date.now() - 86400000).toISOString(),
     created_by_profile: { full_name: 'Alex Employee', department: 'Product Design' },
     assignee: { id: 'staff-2', full_name: 'Sarah Admin', email: 'sarah@company.internal' },
-    collaborators: [],
   },
   {
     id: 't-103',
@@ -68,7 +66,6 @@ const ADMIN_MOCK_TICKETS = [
     created_at: new Date(Date.now() - 86400000 * 1.5).toISOString(),
     created_by_profile: { full_name: 'Clara Oswald', department: 'Marketing' },
     assignee: null,
-    collaborators: [],
   },
   {
     id: 't-104',
@@ -83,7 +80,6 @@ const ADMIN_MOCK_TICKETS = [
     created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
     created_by_profile: { full_name: 'Devon Miles', department: 'Engineering' },
     assignee: { id: 'staff-1', full_name: 'David Support', email: 'david@company.internal' },
-    collaborators: [],
   },
   {
     id: 't-105',
@@ -98,7 +94,6 @@ const ADMIN_MOCK_TICKETS = [
     created_at: new Date(Date.now() - 86400000 * 4).toISOString(),
     created_by_profile: { full_name: 'Rachel Zane', department: 'Legal' },
     assignee: { id: 'staff-4', full_name: 'Emma Watson', email: 'emma@company.internal' },
-    collaborators: [],
   },
 ]
 
@@ -123,19 +118,14 @@ export function AdminDashboardPage() {
         .select(`
           *,
           created_by_profile:created_by ( full_name, email, department ),
-          assignee:assigned_to ( id, full_name, email, avatar_url ),
-          collaborators:ticket_collaborators ( user:user_id ( id, full_name, avatar_url ) )
+          assignee:assigned_to ( id, full_name, email, avatar_url )
         `)
         .order('created_at', { ascending: false })
 
       if (error || !data || data.length === 0) {
         setTickets(ADMIN_MOCK_TICKETS)
       } else {
-        const formatted = data.map((t) => ({
-          ...t,
-          collaborators: t.collaborators ? t.collaborators.map((c) => c.user) : [],
-        }))
-        setTickets(formatted)
+        setTickets(data)
       }
     } catch (err) {
       setTickets(ADMIN_MOCK_TICKETS)
@@ -162,17 +152,13 @@ export function AdminDashboardPage() {
               .select(`
                 *,
                 created_by_profile:created_by ( full_name, email, department ),
-                assignee:assigned_to ( id, full_name, email, avatar_url ),
-                collaborators:ticket_collaborators ( user:user_id ( id, full_name, avatar_url ) )
+                assignee:assigned_to ( id, full_name, email, avatar_url )
               `)
               .eq('id', payload.new.id)
               .maybeSingle()
 
             if (data) {
-              item = {
-                ...data,
-                collaborators: data.collaborators ? data.collaborators.map((c) => c.user) : [],
-              }
+              item = data
             }
           } catch (e) {}
 
@@ -194,17 +180,13 @@ export function AdminDashboardPage() {
               .select(`
                 *,
                 created_by_profile:created_by ( full_name, email, department ),
-                assignee:assigned_to ( id, full_name, email, avatar_url ),
-                collaborators:ticket_collaborators ( user:user_id ( id, full_name, avatar_url ) )
+                assignee:assigned_to ( id, full_name, email, avatar_url )
               `)
               .eq('id', payload.new.id)
               .maybeSingle()
 
             if (data) {
-              item = {
-                ...data,
-                collaborators: data.collaborators ? data.collaborators.map((c) => c.user) : [],
-              }
+              item = data
             }
           } catch (e) {}
 
@@ -226,11 +208,12 @@ export function AdminDashboardPage() {
   const urgentCount = tickets.filter((t) => (t.admin_priority || t.user_priority) === 'URGENT').length
 
   const filteredTickets = tickets.filter((t) => {
+    const cleanSearch = search.trim().toLowerCase()
     const matchesSearch =
-      !search ||
-      t.title.toLowerCase().includes(search.toLowerCase()) ||
-      t.ticket_number.toLowerCase().includes(search.toLowerCase()) ||
-      (t.created_by_profile?.full_name || '').toLowerCase().includes(search.toLowerCase())
+      !cleanSearch ||
+      t.title.toLowerCase().includes(cleanSearch) ||
+      t.ticket_number.toLowerCase().includes(cleanSearch) ||
+      (t.created_by_profile?.full_name || '').toLowerCase().includes(cleanSearch)
 
     const matchesStatus =
       statusFilter === 'ALL'
@@ -377,14 +360,20 @@ export function AdminDashboardPage() {
       render: (row) => <PriorityBadge priority={row.admin_priority || row.user_priority} />,
     },
     {
-      header: 'Assignees',
+      header: 'Assignee',
       key: 'assignee',
-      render: (row) => {
-        const team = []
-        if (row.assignee) team.push(row.assignee)
-        if (row.collaborators) team.push(...row.collaborators)
-        return <AvatarStack users={team} />
-      },
+      render: (row) => (
+        <div className="flex items-center gap-2">
+          {row.assignee ? (
+            <>
+              <Avatar name={row.assignee.full_name} avatarUrl={row.assignee.avatar_url} size="xs" />
+              <span className="text-xs text-slate-700 font-medium">{row.assignee.full_name}</span>
+            </>
+          ) : (
+            <span className="text-xs text-slate-400 italic">Unassigned</span>
+          )}
+        </div>
+      ),
     },
     {
       header: 'Requester / Dept',

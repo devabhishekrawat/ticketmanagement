@@ -22,7 +22,7 @@ export function FilterBar({
     categoryFilter && categoryFilter !== 'ALL',
   ].filter(Boolean).length
 
-  const hasAnyFilter = Boolean(searchQuery || activeCount > 0)
+  const hasAnyFilter = Boolean(searchQuery?.trim() || activeCount > 0)
 
   return (
     <div className="card !p-3 space-y-3">
@@ -32,7 +32,7 @@ export function FilterBar({
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value.trimStart())}
             placeholder="Search tickets by ID, title, or requester..."
             className="form-input !pl-9 !pr-8"
           />
