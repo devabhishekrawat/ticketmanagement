@@ -468,7 +468,6 @@ export function AdminDashboardPage() {
           value={pendingReview}
           icon={Clock}
           subtitle="Needs priority approval"
-          active={pendingReview > 0}
           color="amber"
           onClick={() => navigate('/admin/review')}
         />
@@ -497,7 +496,6 @@ export function AdminDashboardPage() {
           value={urgentCount}
           icon={AlertTriangle}
           subtitle="Immediate action required"
-          active={urgentCount > 0}
           color="rose"
           onClick={() => {
             setPriorityFilter('URGENT')

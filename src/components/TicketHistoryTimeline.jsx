@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../config/supabaseConfig'
 import { History, CheckCircle2, ArrowRight, Shield, User, AlertCircle, RefreshCw } from 'lucide-react'
-
+ 
 const MOCK_HISTORY = [
   {
     id: 'h-1',
@@ -40,16 +40,16 @@ const MOCK_HISTORY = [
     actor: { full_name: 'David Support' },
   },
 ]
-
+ 
 export function TicketHistoryTimeline({ ticketId }) {
   const [history, setHistory] = useState([])
-
+ 
   const fetchHistory = async () => {
     if (!ticketId || ticketId.startsWith('sample-') || ticketId.startsWith('t-')) {
       setHistory(MOCK_HISTORY)
       return
     }
-
+ 
     try {
       const { data, error } = await supabase
         .from('ticket_history')
@@ -64,21 +64,21 @@ export function TicketHistoryTimeline({ ticketId }) {
         `)
         .eq('ticket_id', ticketId)
         .order('created_at', { ascending: false })
-
-      if (error || !data || data.length === 0) {
-        setHistory(MOCK_HISTORY)
+ 
+      if (error) {
+        setHistory([])
       } else {
-        setHistory(data)
+        setHistory(data || [])
       }
     } catch (err) {
-      setHistory(MOCK_HISTORY)
+      setHistory([])
     }
   }
-
+ 
   useEffect(() => {
     fetchHistory()
   }, [ticketId])
-
+ 
   const formatActionTitle = (action, item) => {
     switch (action) {
       case 'TICKET_CREATED':
@@ -105,7 +105,7 @@ export function TicketHistoryTimeline({ ticketId }) {
         return action.replace(/_/g, ' ')
     }
   }
-
+ 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 card-shadow space-y-4">
       <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
@@ -114,28 +114,30 @@ export function TicketHistoryTimeline({ ticketId }) {
           Activity History
         </h3>
       </div>
-
-      <div className="relative pl-4">
-        {}
-        <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-slate-200" />
-
+ 
+      {history.length === 0 ? (
+        <p className="text-xs text-slate-400 py-2">No activity recorded yet.</p>
+      ) : (
+        <div className="relative pl-4">
+          <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-slate-200" />
+ 
         <div className="space-y-4">
           {history.map((item, idx) => (
             <div key={item.id || idx} className="relative flex items-start gap-3">
               {}
               <div className="relative z-10 mt-1 h-3 w-3 rounded-full border-2 border-white bg-blue-600 shadow-xs" />
-
+ 
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-slate-800 leading-tight">
                   {formatActionTitle(item.action, item)}
                 </p>
-
+ 
                 {item.notes && (
                   <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-2">
                     {item.notes}
                   </p>
                 )}
-
+ 
                 <div className="mt-1 flex items-center gap-2 text-[10px] text-slate-400">
                   <span>{item.actor?.full_name || 'System / Staff'}</span>
                   <span>•</span>
@@ -146,6 +148,7 @@ export function TicketHistoryTimeline({ ticketId }) {
           ))}
         </div>
       </div>
+      )}
     </div>
   )
 }

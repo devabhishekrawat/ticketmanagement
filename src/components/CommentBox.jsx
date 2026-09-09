@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { Avatar } from './Avatar'
 import { notify } from '../utils/toast'
 import { Send, Lock, MessageSquare } from 'lucide-react'
-
+ 
 const MOCK_COMMENTS = [
   {
     id: 'c-1',
@@ -23,20 +23,20 @@ const MOCK_COMMENTS = [
     user: { full_name: 'David Support', email: 'david@company.internal', role: 'USER' },
   },
 ]
-
+ 
 export function CommentBox({ ticketId, isStaff = false }) {
   const { user, profile, isAdmin } = useAuth()
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState('')
   const [isInternal, setIsInternal] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-
+ 
   const fetchComments = async () => {
     if (!ticketId || ticketId.startsWith('sample-') || ticketId.startsWith('t-')) {
       setComments(MOCK_COMMENTS)
       return
     }
-
+ 
     try {
       const { data, error } = await supabase
         .from('ticket_comments')
@@ -49,22 +49,22 @@ export function CommentBox({ ticketId, isStaff = false }) {
         `)
         .eq('ticket_id', ticketId)
         .order('created_at', { ascending: true })
-
-      if (error || !data || data.length === 0) {
-        setComments(MOCK_COMMENTS)
+ 
+      if (error) {
+        setComments([])
       } else {
-        setComments(data)
+        setComments(data || [])
       }
     } catch (err) {
-      setComments(MOCK_COMMENTS)
+      setComments([])
     }
   }
-
+ 
   useEffect(() => {
     fetchComments()
-
+ 
     if (!ticketId || ticketId.startsWith('sample-') || ticketId.startsWith('t-')) return
-
+ 
     const channel = supabase
       .channel(`comments-realtime-${ticketId}`)
       .on(
@@ -77,7 +77,7 @@ export function CommentBox({ ticketId, isStaff = false }) {
         },
         async (payload) => {
           if (!payload.new?.id) return
-
+ 
           const { data: fullComment } = await supabase
             .from('ticket_comments')
             .select(`
@@ -89,7 +89,7 @@ export function CommentBox({ ticketId, isStaff = false }) {
             `)
             .eq('id', payload.new.id)
             .maybeSingle()
-
+ 
           if (fullComment) {
             setComments((prev) => {
               if (prev.some((c) => c.id === fullComment.id)) return prev
@@ -102,20 +102,20 @@ export function CommentBox({ ticketId, isStaff = false }) {
         }
       )
       .subscribe()
-
+ 
     return () => {
       supabase.removeChannel(channel)
     }
   }, [ticketId, user?.id])
-
+ 
   const handleAddComment = async (e) => {
     e.preventDefault()
     if (!newComment.trim()) return
-
+ 
     setSubmitting(true)
     const content = newComment.trim()
     const authorName = profile?.full_name || user?.email?.split('@')[0] || 'You'
-
+ 
     const localItem = {
       id: `c-${Date.now()}`,
       content,
@@ -127,7 +127,7 @@ export function CommentBox({ ticketId, isStaff = false }) {
         role: profile?.role || 'USER',
       },
     }
-
+ 
     try {
       if (user?.id && !user.id.startsWith('demo-')) {
         await supabase.from('ticket_comments').insert({
@@ -146,10 +146,10 @@ export function CommentBox({ ticketId, isStaff = false }) {
       notify.newComment(authorName)
     }
   }
-
+ 
   const canSeeInternal = isAdmin || isStaff
   const visibleComments = comments.filter((c) => !c.is_internal || canSeeInternal)
-
+ 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 card-shadow space-y-6">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -161,7 +161,7 @@ export function CommentBox({ ticketId, isStaff = false }) {
           {visibleComments.length} {visibleComments.length === 1 ? 'message' : 'messages'}
         </span>
       </div>
-
+ 
       {}
       <div className="space-y-4">
         {visibleComments.length === 0 ? (
@@ -206,7 +206,7 @@ export function CommentBox({ ticketId, isStaff = false }) {
           ))
         )}
       </div>
-
+ 
       {}
       <form onSubmit={handleAddComment} className="pt-2">
         <div className="rounded-xl border border-slate-200 bg-white overflow-hidden focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
@@ -217,7 +217,7 @@ export function CommentBox({ ticketId, isStaff = false }) {
             placeholder="Type a response or question..."
             className="w-full resize-none p-3 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none"
           />
-
+ 
           <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/75 px-3 py-2">
             {canSeeInternal ? (
               <label className="flex items-center gap-1.5 cursor-pointer text-xs text-slate-600 select-none">
@@ -234,7 +234,7 @@ export function CommentBox({ ticketId, isStaff = false }) {
             ) : (
               <span className="text-[11px] text-slate-400">Press send to notify support team</span>
             )}
-
+ 
             <button
               type="submit"
               disabled={!newComment.trim() || submitting}
